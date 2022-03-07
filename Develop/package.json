@@ -13,6 +13,8 @@
   "dependencies": {
     "console.table": "^0.10.0",
     "inquirer": "^8.2.0",
-    "mysql2": "^2.3.3"
+    "mysql2": "^2.3.3",
+    "promisfy": "^1.2.0",
+    "util": "^0.12.4"
   }
 }
