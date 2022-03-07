@@ -9,7 +9,7 @@ const connection= mysql.createConnection(
       password: process.env.DB_PASSWORD,
       database: "employee_db"
     });
-    createConnection.connect((err) => {
+    connection.connect(function(err){
         if (err) throw err;
     console.log(`Connected to the employee_db database.`)
     });

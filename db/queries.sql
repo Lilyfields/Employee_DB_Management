@@ -1,23 +1,23 @@
 SELECT *
-FROM employee.id AS ID,
-employee.first_name AS First,
-employee.last_name AS Last,
-employee.role_id As Role,
+FROM employees.id AS ID,
+employees.first_name AS First,
+employees.last_name AS Last,
+employees.role_id As Role,
 role.salary AS Salary,
-manager.last_name AS Manager,
-department.name AS Department
+managers.last_name AS Manager,
+departments.name AS Department
 
 --JOIN employee to employee table
 SELECT *
 FROM employee
-LEFT JOIN employee ON employee.manager_id = m.id;
+LEFT JOIN employee ON employees.managers_id = m.id;
 
 --JOIN employee to role table
 SELECT*
 FROM employee
-LEFT JOIN role ON employee.role_id =role.title;
+LEFT JOIN role ON employees.roles_id =role.title;
 
 --JOIN employee to department table
 SELECT*
 FROM employee
-LEFT JOIN department ON employee.department_id =d.id;
+LEFT JOIN department ON employees.departments_id =d.id;
