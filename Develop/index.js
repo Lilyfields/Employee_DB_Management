@@ -1,39 +1,8 @@
-const mysql = require ("mysql2");
+
 const inquirer = require ("inquirer");
 const consoleTable = require("console.table");
-const sequelize =require('../Assets/config/connection')
-const app = express();
-const PORT = process.env.PORT || 3001;
+const {db}= require ('../Assets/config/connection')
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// turn on routes
-app.use(routes);
-
-// turn on connection to db and server
-sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => console.log('Now listening'));
-});
-
-
-const connection= mysql.createConnection(
-    {
-      host: "localhost",
-      // MySQL username,
-      user: "root",
-      // MySQL password
-      password: "",
-      database: "employee_db"
-    },
-    console.log(`Connected to the employee_db database.`)
-  );
-
-  connection.connect(function(err){
-    if(err) throw err;
-    console.log("SQL connected");
-    initiate();
-  });
 
   //Plan: the user would see questions in regards to employee details.
  function initiate() {
@@ -102,7 +71,13 @@ const connection= mysql.createConnection(
   }
 
         function viewAllEmployees(){
-          connection.query(" SELECT employee.id AS ID,employee.first_name AS First,employee.last_name AS Last,employee.role_id As Role, role.salary AS Salary,manager.last_name AS Manager, department.name AS Department FROM employee LEFT JOIN employee ON employee.manager_id = m.id ROM employee LEFT JOIN role ON employee.role_id =role.title FROM employe LEFT JOIN department ON employee.department_id =d.id",
+          connection.query(
+        ` SELECT employee.id AS ID,employee.first_name AS First,employee.last_name AS Last,
+          employee.role_id As Role, role.salary AS Salary,manager.last_name AS Manager,
+           department.name AS Department FROM employee 
+           LEFT JOIN employee ON employee.manager_id = m.id ROM employee 
+           LEFT JOIN role ON employee.role_id =role.title FROM employe 
+           LEFT JOIN department ON employee.department_id =d.id`,
           function (err, results){
             if(err) throw err;
             console.table(results);
