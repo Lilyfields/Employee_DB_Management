@@ -1,7 +1,7 @@
 
 const inquirer = require ("inquirer");
 const consoleTable = require("console.table");
-const connection= require ('../Assets/config/connection')
+const connection= require ('./config/connection');
 
 
   //Plan: the user would see questions in regards to employee details.
