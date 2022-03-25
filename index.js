@@ -48,7 +48,7 @@ function view() {
     ])
     .then(function (results) {
       switch (results.options) {
-        case"Departments" :
+        case "Departments":
           viewDepartments();
           break;
         case "Roles":
@@ -62,7 +62,6 @@ function view() {
       }
     });
 }
-
 
 function viewDepartments() {
   connection.query(`SELECT * FROM departments;`, function (err, results) {
@@ -102,36 +101,43 @@ function viewDepartments() {
 function viewRoles() {
   connection.query(`SELECT title, id FROM roles;`, function (err, results) {
     if (err) throw err;
-
-    inquirer
-      .prompt([
-        {
-          name: "choice",
-          type: "rawlist",
-          choices: function () {
-            let choiceArr = [];
-            for (i = 0; i < results.length; i++) {
-              choiceArr.push({
-                name: results[i].title,
-                value: results[i].id,
-              });
-            }
-            return choiceArr;
-          },
-
-          message: "Please choose a role?",
-        },
-      ])
-      .then(function (results) {
-        connection.query(`SELECT * FROM employees WHERE roles_id =?;`,[results.choice],function (err, results) {
-            if (err) throw err;
-            console.table(results);
-            initiate();
-          }
-        );
-      });
-  });
+    console.table(results);
+    initiate();
+  })
 }
+
+//     // inquirer
+//       .prompt([
+//         {
+//           name: "choice",
+//           type: "rawlist",
+//           choices: function () {
+//             let choiceArr = [];
+//             for (i = 0; i < results.length; i++) {
+//               choiceArr.push({
+//                 name: results[i].title,
+//                 value: results[i].id,
+//               });
+//             }
+//             return choiceArr;
+//           },
+
+//           message: "Please choose a role?",
+//         },
+//       ])
+//       .then(function (results) {
+//         connection.query(
+//           `SELECT * FROM employees WHERE roles_id =?;`,
+//           [results.choice],
+//           function (err, results) {
+//             if (err) throw err;
+//             console.table(results);
+//             initiate();
+//           }
+//         );
+//       });
+//   });
+// }
 
 function viewAllEmployees() {
   connection.query(`SELECT * from employees;`, function (err, results) {
@@ -140,8 +146,6 @@ function viewAllEmployees() {
     initiate();
   });
 }
-
-
 
 //ADD function
 
@@ -152,7 +156,7 @@ function add() {
         type: "list",
         name: "add",
         message: "Please choose what you would like to add?",
-        choices: ["Department", "Employee roles", " Employees"],
+        choices: ["Department", "Employee roles", "Employees"],
       },
     ])
     .then(function (results) {
@@ -242,63 +246,83 @@ function addEmployeeRoles() {
     });
 }
 
-function addEmployees() {
-  connection.query("SELECT *FROM roles", function (err, results) {
-    if (err) throw err;
-    inquirer
-      .prompt([
-        {
-          name: "First_Name",
-          type: "input",
-          message: "Enter Employees First Name?",
+async function addEmployees() {
+  const employees = (await connection.promise().query('SELECT * from employees'))[0];
+  const roles = (await connection.promise().query('SELECT * from roles'))[0];
+    
+  inquirer
+    .prompt([
+      {
+        name: "First_Name",
+        type: "input",
+        message: "Enter Employees First Name?",
+      },
+      {
+        name: "Last_Name",
+        type: "input",
+        message: "Enter Employees Last Name?",
+      },
+      {
+        name: "choice",
+        type: "list",
+        choices: function () {
+          let choiceArr = [];
+          
+          for (let i = 0; i < roles.length; i++) {
+            choiceArr.push({
+              name: roles[i].title,
+              value: roles[i].id,
+            });
+          }
+          
+
+          return choiceArr;
         },
-        {
-          name: "Last_Name",
-          type: "input",
-          message: "Enter Employees Last Name?",
-        },
-        {
-          name: "roles",
-          type: "rawlist",
-          choices: function () {
-            var choiceArr = [];
-            for (i = 0; i < results.length; i++) {
-              choiceArr.push(results[i].title);
-            }
+
+        message: "Please choose a role?",
+      },
+      {
+        name: "manager",
+        type: "list",
+        choices: function(){
+          let choiceArr = [];
+
+          for (let i=0; i< employees.length; i ++) {
+            choiceArr.push({
+              name: employees [i].first_name + employees[i].last_name,
+              value: employees [i].id,
+
+            });
+          }
+
             return choiceArr;
-          },
-          message: "What is the title of the roles?",
         },
-        {
-          name: "manager",
-          type: "number",
-          validate: function (value) {
-            if (isNaN(value) === false) {
-              return true;
-            }
-            return false;
-          },
-          message: "Enter managers Id?",
-          default: 1,
+        message: "Who will be the employees manager?",
+        default: 1,
+      },
+    ]).then (function (results) {
+      const saveName = results.choice;
+      console.log(results);
+      console.log(saveName);
+      connection.query("INSERT INTO employees SET ? WHERE last_name=?", [
+      {
+       first_name: results.first_name,
+       last_name:results.last_name,
+       roles_id: results.role,
+       managers_id: results.manager,
         },
-      ])
-      .then(function (results) {
-        connect.query("INSERT INTO employees SET ?", {
-          first_name: results.First_Name,
-          last_name: results.Last_Name,
-          roles_id: results.roles,
-          managers_id: results.managers,
-        });
-        console.log("Employees has been added successfully");
-        initiate();
-      });
-  });
-}
+       saveName,
+      ]);
+       console.log("Employee has been successfully added");
+       initiate();
+    });
+  }
+  
 
 //update fxn
-function updateEmployees() {
-  connection.query("SELECT * FROM employees", function (err, results) {
-    if (err) throw err;
+async function updateEmployees() {
+  const employees = (await connection.promise().query('SELECT * FROM employees'))[0];
+  const roles= (await connection.promise().query('SELECT * FROM roles'))[0];
 
     inquirer
       .prompt([
@@ -307,70 +331,71 @@ function updateEmployees() {
           type: "rawlist",
           choices: function () {
             let choiceArr = [];
-            for (i = 0; i < results.length; i++) {
-              choiceArr.push(results[i].last_name);
-            }
+            for ( let i = 0; i < employees.length; i++) {
+              choiceArr.push({
+                name: employees[i].first_name + employees[i].last_name,
+                value: employees[i].id,
+            });
+          }
             return choiceArr;
           },
           message: "Please select employee to update?",
         },
-      ])
-      .then(function (results) {
-        const saveName = results.choice;
-        console.log(results);
-        connection.query("SELECT * FROM employees", function (err, results) {
-          if (err) throw err;
-          connection.query("SELECT * FROM roles", function (err,roles) {
-            inquirer
-            .prompt([
-              {
-                name: "role",
-                type: "rawlist",
-                choices: function () {
-                  var choiceArr = [];
-                  for (i = 0; i < roles.length; i++) {
-                    choiceArr.push({
-                      name: roles[i].title,
-                      value: roles[i].id,
 
-                    });
-                  }
-                  return choiceArr;
-                },
-                message: "Please select a role?",
-              },
-              {
-                name: "manager",
-                type: "number",
-                validate: function (value) {
-                  if (isNaN(value) === false) {
-                    return true;
-                  }
-                  return false;
-                },
-                message: "Enter a new Manger Id",
-                default: 1,
-              },
-            ])
-            .then(function (results) {
-              console.log(results);
-              console.log(saveName);
-              connection.query("UPDATE employees SET ? WHERE last_name=?", [
-                {
-                  roles_id: results.role,
-                  managers_id: results.manager,
-                },
-                saveName,
-              ]);
-              console.log("Employee has been successfully updated");
-              initiate();
-            });
-          })
-          
-        });
-      });
-  });
-}
+        {
+          name: "role",
+          type: "rawlist",
+          choices: function () {
+            var choiceArr = [];
+            for (i = 0; i < roles.length; i++) {
+              choiceArr.push({
+                name: roles[i].title,
+                value: roles[i].id,
+              });
+            }
+            return choiceArr;
+          },
+          message: "Please select a role?",
+        },
+
+        {
+          name: "manager",
+          type: "list",
+          choices: function(){
+            let choiceArr = [];
+  
+            for ( i=0; i< employees.length; i ++) {
+              choiceArr.push({
+                name: employees [i].first_name + employees[i].last_name,
+                value: employees [i].id,
+  
+              });
+            }
+  
+              return choiceArr;
+          },
+          message: "Who will be the employees manager?",
+          default: 1,
+        },
+      ]).then(function (results) {
+           const saveName= results.choices;
+          console.log(results);
+          console.log(saveName);
+          connection.query("UPDATE employees SET ? WHERE last_name=?", [
+           {
+               first_name: results.first_name,
+                last_name:results.last_name,
+                 roles_id: results.role,
+                 managers_id: results.manager,
+                    
+                 },
+                 saveName,
+               ]);
+               console.log("Employee has been successfully updated");
+                initiate();
+              });
+         }
+
 
 // invoke / run the initiate function
 initiate();
