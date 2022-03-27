@@ -13,7 +13,7 @@ I WANT to be able to view and manage the departments, roles, and employees in my
 SO THAT I can organize and plan my business
 ```
 
-## Acceptance Criteria
+## Concept of Design and function
 
 ```md
 GIVEN a command-line application that accepts user input
