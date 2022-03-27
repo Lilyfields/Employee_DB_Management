@@ -58,7 +58,7 @@ Design of the database schema as shown in the following image:
 
 ![Database schema includes tables labeled “employee,” role,” and “department.”](./Assets/12-sql-homework-demo-01.png)
 
-As the image illustrates, your schema should contain the following three tables:
+As the image illustrates, my schema contain the following three tables:
 
 * `department`
 
@@ -91,7 +91,7 @@ As the image illustrates, your schema should contain the following three tables:
   
 
 
-### Technical Features:
+### Other Features:
 
     * Uses the [Inquirer package](https://www.npmjs.com/package/inquirer).
 
