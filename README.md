@@ -1,4 +1,4 @@
-# 12 SQL: Employee Tracker
+# 12 SQL: Employee_DB_Management
 
 ## Your Task
 
