@@ -1,10 +1,9 @@
 # 12 SQL: Employee_DB_Management
 
-## Your Task
+## My Journey and development
 
-Developers frequently have to create interfaces that allow non-developers to easily view and interact with information stored in databases. These interfaces are called **content management systems (CMS)**. Your assignment this week is to build a command-line application from scratch to manage a company's employee database, using Node.js, Inquirer, and MySQL.
+Developers frequently have to create interfaces that allow non-developers to easily view and interact with information stored in databases. These interfaces are called **content management systems (CMS)**. My assignment this week is to build a command-line application from scratch to manage a company's employee database, using Node.js, Inquirer, and MySQL.
 
-Because this application won’t be deployed, you’ll also need to create a walkthrough video that demonstrates its functionality and all of the following acceptance criteria being met. You’ll need to submit a link to the video and add it to the README of your project.
 
 ## User Story
 
@@ -54,6 +53,7 @@ I've attempted to make my queries asynchronous. MySQL2 exposes a `.promise()` fu
 
 I have created a separate file that contains functions for performing specific SQL queries and seeds. 
 
+
 Design of the database schema as shown in the following image:
 
 ![Database schema includes tables labeled “employee,” role,” and “department.”](./Assets/12-sql-homework-demo-01.png)
@@ -101,8 +101,12 @@ As the image illustrates, my schema contain the following three tables:
 
     * Table schema outlined as above
 
-* The application user experience is intuitive and easy to navigate.
+  
 
+### Challanges:
+
+   * Due to the timeframe constraint, I could only work on limited features and functionality.
+   * Updating employees details database.
 
 
 ### Future Development
