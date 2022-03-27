@@ -194,8 +194,8 @@ function addDepartment() {
           console.log("Departments is updated with" + results.newDepartment);
           initiate();
         }
-      );
-    });
+      )
+    })
 }
 
 function addEmployeeRoles() {
@@ -242,14 +242,14 @@ function addEmployeeRoles() {
           console.log("Employees Roles updated with" + results.roles);
           initiate();
         }
-      );
-    });
+      )
+    })
 }
 
 async function addEmployees() {
   const employees = (await connection.promise().query('SELECT * from employees'))[0];
   const roles = (await connection.promise().query('SELECT * from roles'))[0];
-    
+
   inquirer
     .prompt([
       {
@@ -263,138 +263,162 @@ async function addEmployees() {
         message: "Enter Employees Last Name?",
       },
       {
-        name: "choice",
-        type: "list",
+        name: "roles",
+        type: "rawlist",
         choices: function () {
           let choiceArr = [];
-          
-          for (let i = 0; i < roles.length; i++) {
+
+          for (i = 0; i < roles.length; i++) {
             choiceArr.push({
               name: roles[i].title,
               value: roles[i].id,
             });
           }
-          
+
 
           return choiceArr;
         },
 
         message: "Please choose a role?",
       },
+
       {
         name: "manager",
-        type: "list",
-        choices: function(){
+        type: "rawlist",
+        choices: function () {
           let choiceArr = [];
 
-          for (let i=0; i< employees.length; i ++) {
+          for (i = 0; i < employees.length; i++) {
             choiceArr.push({
-              name: employees [i].first_name + employees[i].last_name,
-              value: employees [i].id,
+              name: employees[i].first_name + employees[i].last_name,
+              value: employees[i].id,
+
 
             });
           }
 
-            return choiceArr;
+          return choiceArr;
         },
         message: "Who will be the employees manager?",
-        default: 1,
+
       },
-    ]).then (function (results) {
+    ]).then(function (results) {
       const saveName = results.choice;
       console.log(results);
       console.log(saveName);
-      connection.query("INSERT INTO employees SET ? WHERE last_name=?", [
-      {
-       first_name: results.first_name,
-       last_name:results.last_name,
-       roles_id: results.role,
-       managers_id: results.manager,
+      connection.query(
+        "INSERT INTO employees SET ?", [
+        {
+          first_name: results.First_Name,
+          last_name: results.Last_Name,
+          roles_id: results.roles,
+          managers_id: results.manager,
         },
-       saveName,
-      ]);
-       console.log("Employee has been successfully added");
-       initiate();
+        saveName,
+
+      ], function (err) {
+        if (err) throw err;
+        console.log("Employee has been successfully added");
+        initiate();
+      });
+
     });
-  }
-  
+}
+
+
+// function (err) {
+//if (err) throw err;
+// console.log("Employees Roles updated with" + results.roles);
+//initiate();
+// }
+//  );
+// });
+//}
+
+
+
 
 //update fxn
 async function updateEmployees() {
   const employees = (await connection.promise().query('SELECT * FROM employees'))[0];
-  const roles= (await connection.promise().query('SELECT * FROM roles'))[0];
+  const roles = (await connection.promise().query('SELECT * from roles'))[0];
 
-    inquirer
-      .prompt([
-        {
-          name: "choices",
-          type: "rawlist",
-          choices: function () {
-            let choiceArr = [];
-            for ( let i = 0; i < employees.length; i++) {
-              choiceArr.push({
-                name: employees[i].first_name + employees[i].last_name,
-                value: employees[i].id,
+  inquirer
+    .prompt([
+      {
+        name: "employees",
+        type: "rawlist",
+        choices: function () {
+          let choicesArr = [];
+          for (i = 0; i < employees.length; i++) {
+            choicesArr.push({
+              name: employees[i].first_name + employees[i].last_name,
             });
           }
-            return choiceArr;
-          },
-          message: "Please select employee to update?",
+          return choicesArr;
         },
+        message: "Please select employee to update?",
+      },
 
-        {
-          name: "role",
-          type: "rawlist",
-          choices: function () {
-            var choiceArr = [];
-            for (i = 0; i < roles.length; i++) {
-              choiceArr.push({
-                name: roles[i].title,
-                value: roles[i].id,
-              });
-            }
-            return choiceArr;
-          },
-          message: "Please select a role?",
+      {
+        name: "roles",
+        type: "rawlist",
+        choices: function () {
+          let choiceArr = [];
+          for (i = 0; i < roles.length; i++) {
+            choiceArr.push({
+              name: roles[i].title,
+              value: roles[i].id,
+            });
+          }
+          return choiceArr;
         },
+        message: "Please select their new role?",
+      },
 
-        {
-          name: "manager",
-          type: "list",
-          choices: function(){
-            let choiceArr = [];
-  
-            for ( i=0; i< employees.length; i ++) {
-              choiceArr.push({
-                name: employees [i].first_name + employees[i].last_name,
-                value: employees [i].id,
-  
-              });
-            }
-  
-              return choiceArr;
-          },
-          message: "Who will be the employees manager?",
-          default: 1,
+      {
+        name: "manager",
+        type: "rawlist",
+        choices: function () {
+          let choiceArr = [];
+
+          for (i = 0; i < employees.length; i++) {
+            choiceArr.push({
+              name: employees[i].first_name + employees[i].last_name,
+              value: 1,
+        
+
+            });
+          }
+
+          return choiceArr;
         },
-      ]).then(function (results) {
-           const saveName= results.choices;
-          console.log(results);
-          console.log(saveName);
-          connection.query("UPDATE employees SET ? WHERE last_name=?", [
-           {
-               first_name: results.first_name,
-                last_name:results.last_name,
-                 roles_id: results.role,
-                 managers_id: results.manager,
-                    
-                 },
-                 saveName,
-               ]);
-               console.log("Employee has been successfully updated");
-                initiate();
-              });
-         }
+        message: "Who will be the employees manager?",
+      },
+    ]).then(function (results) {
+      const saveName = results.choices;
+      console.log(results);
+      console.log(saveName);
+      connection.query(
+        'UPDATE employees SET last_name= ? WHERE roles_id = ?',
+        [
+          {
+            last_name: results.employees,
+            roles_id: results.roles,
+            managers_id: results.manager,
+
+          },
+          saveName
+        ],
+
+        function (err) {
+          if (err) throw err;
+          console.log("Employee has been successfully updated");
+          initiate();
+        });
+
+    });
+}
 
 
 // invoke / run the initiate function
